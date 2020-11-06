@@ -21,10 +21,10 @@ def get_autos_list():
         telegram_message = get_device_response(ria_api_key, id)
         result.append(telegram_message)
 
-    tgMessage = AutoUnitTelegramMessage(result)
+    tgMessage = AutoUnitTelegramMessage(result).createParamsRequest(chat_id)
     api_result = requests.get(f"https://api.telegram.org/bot{bot_id}/sendMessage?{tgMessage}")
 
-    return "success"
+    return api_result
 
 
 @auto_bp.route('', methods=['GET'])
