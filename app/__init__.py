@@ -9,8 +9,8 @@ app = Flask(__name__)
 # app.config.from_object(AutoriaConfig)
 from app import routes
 
-from app.autoria.api import auto_bp as auto_ria_api
-from app.autoria.api.errors import api_error_bp as auto_ria_api_error
-
-app.register_blueprint(auto_ria_api, url_prefix='/api/auto')
-app.register_blueprint(auto_ria_api_error)
+# from app.autoria.api import auto_bp as auto_ria_api
+# from app.autoria.api.errors import api_error_bp as auto_ria_api_error
+#
+# app.register_blueprint(auto_ria_api, url_prefix='/api/auto')
+# app.register_blueprint(auto_ria_api_error)
