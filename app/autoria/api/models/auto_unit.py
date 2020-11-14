@@ -1,19 +1,23 @@
 class AutoData:
-    def __init__(self, description, version, year, gear_box_name, mark_name):
+    def __init__(self, auto_id, description, version, year, gear_box_name, mark_name, race):
+        self.auto_id = auto_id
         self.description = description
         self.version = version,
         self.year = year
         self.gearboxName = gear_box_name
-        self.markName: mark_name
+        self.markName = mark_name
+        self.race = race
 
     @classmethod
     def parseJson(cls, json, mark_name):
         return cls(
+            json["autoId"],
             json["description"],
             json["version"],
             json["year"],
             json["gearboxName"],
-            mark_name
+            mark_name,
+            json["race"]
         )
 
 
@@ -34,6 +38,10 @@ class AutoUnit:
         self.update_date = update_date
         self.expire_date = expire_date
 
+        self.auto_id = auto_data.auto_id
+        self.year = auto_data.year
+        self.race = auto_data.race
+
     @classmethod
     def parseJson(cls, json):
         return cls(
@@ -47,5 +55,12 @@ class AutoUnit:
             json["photoData"]["seoLinkF"],
             json["addDate"],
             json["updateDate"],
-            json["expireDate"]
+            json["expireDate"],
         )
+
+    def toJson(self):
+        return {
+            "title": self.title,
+            "usd": self.price_usd,
+            "year": self.year,
+        }
