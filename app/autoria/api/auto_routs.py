@@ -1,5 +1,4 @@
 # return json.dumps([ob.__dict__ for ob in result])
-import json
 import time
 from io import BytesIO
 
@@ -12,6 +11,8 @@ from app.autoria.api.models.RiaParamsBuilder import RiaParamsBuilder
 from app.autoria.api.models.auto_unit import AutoUnit
 from app.autoria.api.templates.auto_unit_telegram_message import AutoUnitTelegramMessage
 from app.repository import IdsRepository
+from app.usecases.auto_list_usecase import load_data
+from app.usecases.collage_list_usecase import createCollage
 
 
 @auto_bp.route('/list', methods=['GET'])
@@ -20,31 +21,22 @@ def get_autos_list():
     id = repository.read_id()
 
     ria_api_key = 'DtjLTYtg3ExFTlmn4FLnsIhCVeU0i5nOIdlaVSce'
+    params_builder = RiaParamsBuilder()
+
     chat_id = '300181845'
     bot_id = '1216317183:AAEkRkYDCLt2NQ-1Mqm9WeJbURHgVsbp14g'
-    params_builder = RiaParamsBuilder()
-    api_result = requests.get(f"https://developers.ria.com/auto/search?api_key={ria_api_key}&{params_builder.build()}")
-    api_response = api_result.json()
-    ids = api_response["result"]["search_result"]["ids"]
-    result = []
-    if id is not None:
-        if id in ids:
-            index = ids.index(id)
-            ids = ids[:index]
 
-    for id in enumerate(ids):
-        unit = _get_device_response(ria_api_key, id)
-        result.append(unit)
+    result = load_data(id, params_builder, ria_api_key)
+    collage_path = createCollage(result)
 
-    path = _createCollage(result)
     auto_unit = AutoUnitTelegramMessage(result)
     tg_message = auto_unit.createParamsRequest(chat_id)
 
     if len(result) > 0:
         repository.save_id(result[0].auto_id)
 
-    if path is not None:
-        files = {'photo': open(path, 'rb')}
+    if collage_path is not None:
+        files = {'photo': open(collage_path, 'rb')}
         params = {
             'chat_id': chat_id,
             'parse_mode': 'HTML'

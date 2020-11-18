@@ -23,3 +23,16 @@ class AutoUnitTelegramMessage:
             text = ''.join((text,
                             f'<a href="{unit.url}">{num}. {unit.title} | {unit.year} | ${unit.price_usd}</a>'))
         return text
+
+    @classmethod
+    def photo_params(cls, chat_id: int):
+        return {
+            'chat_id': chat_id,
+            'parse_mode': 'HTML'
+        }
+
+    # files = {'photo': open(collage_path, 'rb')}
+    # params = {
+    #     'chat_id': chat_id,
+    #     'parse_mode': 'HTML'
+    # }
